@@ -1,0 +1,31 @@
+---
+- name: Find existing VMs
+  ovirt_vms_facts:
+    auth: "{{ ovirt_auth }}"
+    pattern: "datacenter={{ data_center_name }} and name={{ hosted_engine_vm_name }}"
+    fetch_nested: true
+
+- name: Find HE info if HE
+  set_fact:
+    hosted_engine: "{{ ovirt_vms | length > 0 }}"
+
+- name: is it an HE env?
+  debug:
+    msg: "is hosted_engine: {{ hosted_engine }}"
+
+- name: Find HE Storage Domain id if HE
+  block:
+    - name: Fetch disk info of HE VM
+      ovirt_disks_facts:
+        auth: "{{ ovirt_auth }}"
+        pattern: "datacenter={{ data_center_name }} and vm_names={{ hosted_engine_vm_name }}"
+
+    - name: Find HE disk id and storage domain id
+      set_fact:
+        hosted_engine_vm_disk_id: "{{ ovirt_disks[0].id }}"
+        hosted_engine_sd_id: "{{ ovirt_disks[0].storage_domains[0].id}}"
+
+    - name: Find cluster that contains the hosted engine VM
+      set_fact:
+        hosted_engine_cluster_id: "{{ ovirt_vms[0].cluster.id }}"
+  when: hosted_engine

@@ -1,0 +1,34 @@
+---
+- name: Find facts for the engine VM
+  ovirt_vms_facts:
+    auth: "{{ ovirt_auth }}"
+    pattern: "datacenter={{ data_center_name }} and name={{ hosted_engine_vm_name }}"
+    fetch_nested: true
+
+- name: show vm data
+  debug:
+    msg: "{{ ovirt_vms }}"
+
+- name: Find host id that contains the hosted engine VM
+  set_fact:
+    hosted_engine_host_id: "{{ ovirt_vms[0].host.id }}"
+
+- name: display host id that hosts the engine VM
+  debug:
+    msg: "host id: {{ ovirt_vms[0].host.id }}"
+
+- name: Find existing Hosts
+  ovirt_hosts_facts:
+    auth: "{{ ovirt_auth }}"
+
+- name: Remove Hosts except the one hosting the engine VM
+  ovirt_hosts:
+    state: absent
+    name: "{{ host_item.name }}"
+    auth: "{{ ovirt_auth }}"
+  with_items: "{{ ovirt_hosts }}"
+  loop_control:
+    loop_var: host_item
+  when:
+    - host_item.cluster.id == hosted_engine_cluster_id
+    - host_item.id != hosted_engine_host_id
