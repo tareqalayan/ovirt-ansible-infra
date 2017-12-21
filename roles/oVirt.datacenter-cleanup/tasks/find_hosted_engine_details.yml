@@ -1,0 +1,44 @@
+---
+- name: Find existing VMs
+  ovirt_vms_facts:
+    auth: "{{ ovirt_auth }}"
+    pattern: "datacenter={{ data_center_name }}"
+
+- name: Find HE info if HE
+  set_fact:
+    hosted_engine: "{{ ovirt_vms | selectattr(search_key, 'equalto', search_val) | list | count > 0 }}"
+  vars:
+    search_key: origin
+    search_val: managed_hosted_engine
+
+- name: Is Env is hosted engine setup
+  debug:
+    msg: "is hosted_engine: {{ hosted_engine }}"
+
+- name: Find HE Storage Domain id if HE
+  block:
+    - name: Set HE VM name
+      set_fact:
+        hosted_engine_vm_name: "{{ ovirt_vms | selectattr(search_key, 'equalto', search_val) | map(attribute='name') | list | first }}"
+      vars:
+        search_key: origin
+        search_val: managed_hosted_engine
+
+    - name: Is Env is hosted engine setup
+      debug:
+        msg: "Hosted engine VM name: {{ hosted_engine_vm_name }}"
+
+    - name: Fetch disk info of HE VM
+      ovirt_disk_facts:
+        auth: "{{ ovirt_auth }}"
+        pattern: "datacenter={{ data_center_name }} and vm_names={{ hosted_engine_vm_name }}"
+
+    - name: Find HE disk id and storage domain id
+      set_fact:
+        hosted_engine_vm_disk_id: "{{ ovirt_disks[0].id }}"
+        hosted_engine_sd_id: "{{ ovirt_disks[0].storage_domains[0].id }}"
+
+    - name: Find cluster that contains the hosted engine VM
+      set_fact:
+        hosted_engine_cluster_id: "{{ ovirt_vms[0].cluster.id | default('') }}"
+  when: hosted_engine

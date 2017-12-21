@@ -1,8 +1,11 @@
 ---
+- name: Find hosted engine details if HE
+  include: find_hosted_engine_details.yml
+
 - name: Remove VMPools
   include: vm_pools.yml
 
-- name: Remove VMs
+- name: Remove VMs (apart from hosted engine VM if HE)
   include: vms.yml
 
 - name: Remove Templates
@@ -11,27 +14,29 @@
 - name: Remove Disks
   include: disks.yml
 
-- name: Find existing Storage Domains in Datacenter
-  ovirt_storage_domains_facts:
-    auth: "{{ ovirt_auth }}"
-    pattern: "datacenter={{ data_center_name }}"
-
-- name: Remove all Storage Domains except master
+- name: Remove all Storage Domains except master and hosted_storage if HE
   include: storages_pre.yml
 
 - name: Find existing clusters in Datacenter
-  ovirt_clusters_facts:
+  ovirt_cluster_facts:
     auth: "{{ ovirt_auth }}"
     pattern: "datacenter={{ data_center_name }}"
 
+- name: Remove hosts except from the one hosting the engine VM
+  include: remove_hosts_not_hosting_engine_vm.yml
+  when: hosted_engine
+
 - name: Remove Datacenter
   include: datacenter.yml
+  when: not hosted_engine
 
 - name: Remove master Storage Domain
   include: storages_last.yml
+  when: not hosted_engine
 
 - name: Remove Clusters and Hosts
   include: cluster_and_hosts.yml
   with_items: "{{ ovirt_clusters }}"
   loop_control:
     loop_var: cluster_item
+  when: hosted_engine_cluster_id is defined and cluster_item.id != hosted_engine_cluster_id

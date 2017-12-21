@@ -4,6 +4,17 @@ oVirt Datacenter Cleanup
 The `oVirt.datacenter-cleanup` role is used to cleanup all entities inside
 oVirt datacenters and finally remove the datacenters themselves.
 
+In the special case that the datacenter provided to cleanup contains a VM that
+serves as Hosted Engine the role will not delete the following entities:
+
+- the hosted engine VM itself
+- the storage domain on which the hosted engine VM resides
+- the master storage domain
+- the host and cluster which accommodate the hosted engine VM
+- the datacenter itself
+
+Note that this roles assumes that the Hosted Engine VM have only one disk.
+
 Requirements
 ------------
 

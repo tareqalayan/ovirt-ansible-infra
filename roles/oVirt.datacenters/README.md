@@ -3,6 +3,10 @@ oVirt Datacenters
 
 The `oVirt.datacenters` role is used to set up or cleanup oVirt datacenters.
 
+In the special case of cleaning up oVirt datacenter that contains a Hosted Engine VM
+the behavior of the role is different and is explained in more details in:
+[ovirt-datacenter-cleanup](https://github.com/oVirt/ovirt-ansible/blob/master/roles/ovirt-datacenter-cleanup/README.md)
+
 Requirements
 ------------
 
