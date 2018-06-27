@@ -24,9 +24,9 @@ Role Variables
 | data_center_local        | false                 | Specify whether the data center is shared or local. |
 | compatibility_version    | UNDEF                 | Compatibility version of data center. |
 | data_center_state        | present               | Specify whether the datacenter should be present or absent. |
-| recursive_cleanup        | false                 | Specify whether to recursively remove all entities inside DC. Valid only when I(state) == I(absent). |
-| format_storages          | false                 | Specify whether to format ALL the storages that are going to be removed as part of the DC. Valid only when I(data_center_state) == I(absent) and I(recursive_cleanup) == I(true). |
-| hosted_engine_vm_name    | HostedEngine          | Name of the hosted engine VM. If VM with such name exists HE environment is assumed. Valid only when I(data_center_state) == I(absent) and I(recursive_cleanup) == I(true). |
+| recursive_cleanup        | false                 | Specify whether to recursively remove all entities inside DC. Valid only when state == absent. |
+| format_storages          | false                 | Specify whether to format ALL the storages that are going to be removed as part of the DC. Valid only when data_center_state == absent and recursive_cleanup == true. |
+| hosted_engine_vm_name    | HostedEngine          | Name of the hosted engine VM. If VM with such name exists HE environment is assumed. Valid only when data_center_state == absent and recursive_cleanup == true. |
 
 Dependencies
 ------------
