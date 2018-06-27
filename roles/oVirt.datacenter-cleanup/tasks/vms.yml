@@ -10,7 +10,6 @@
     id: "{{ ovirt_item.id }}"
     auth: "{{ ovirt_auth }}"
   with_items: "{{ ovirt_vms }}"
-  when: not hosted_engine or
-        (ovirt_item.name != hosted_engine_vm_name)
+  when: not hosted_engine or (ovirt_item.name != hosted_engine_vm_name)
   loop_control:
     loop_var: ovirt_item
