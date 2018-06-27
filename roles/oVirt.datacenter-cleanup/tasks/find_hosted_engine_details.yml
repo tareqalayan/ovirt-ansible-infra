@@ -6,12 +6,12 @@
 
 - name: Find HE info if HE
   set_fact:
-    hosted_engine: "{{ ovirt_vms | selectattr(search_key,'equalto',search_val) | list | count > 0 }}"
+    hosted_engine: "{{ ovirt_vms | selectattr(search_key, 'equalto', search_val) | list | count > 0 }}"
   vars:
     search_key: origin
     search_val: managed_hosted_engine
 
-- name: Print information about VM running the engine
+- name: Is Env is hosted engine setup
   debug:
     msg: "is hosted_engine: {{ hosted_engine }}"
 
@@ -19,10 +19,14 @@
   block:
     - name: Set HE VM name
       set_fact:
-        hosted_engine_vm_name: "{{ ovirt_vms | selectattr(search_key,'equalto',search_val) | map(attribute='name') | list | first }}"
+        hosted_engine_vm_name: "{{ ovirt_vms | selectattr(search_key, 'equalto', search_val) | map(attribute='name') | list | first }}"
       vars:
         search_key: origin
         search_val: managed_hosted_engine
+
+    - name: Is Env is hosted engine setup
+      debug:
+        msg: "Hosted engine VM name: {{ hosted_engine_vm_name }}"
 
     - name: Fetch disk info of HE VM
       ovirt_disks_facts:
