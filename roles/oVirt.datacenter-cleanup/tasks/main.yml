@@ -39,4 +39,4 @@
   with_items: "{{ ovirt_clusters }}"
   loop_control:
     loop_var: cluster_item
-  when: hosted_engine_cluster_id and cluster_item.id != hosted_engine_cluster_id
+  when: hosted_engine_cluster_id is defined and cluster_item.id != hosted_engine_cluster_id
