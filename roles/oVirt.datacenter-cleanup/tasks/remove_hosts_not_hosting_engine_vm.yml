@@ -3,7 +3,6 @@
   ovirt_vms_facts:
     auth: "{{ ovirt_auth }}"
     pattern: "datacenter={{ data_center_name }} and name={{ hosted_engine_vm_name }}"
-    fetch_nested: true
 
 - name: Find host id that hosts the hosted engine VM
   set_fact:

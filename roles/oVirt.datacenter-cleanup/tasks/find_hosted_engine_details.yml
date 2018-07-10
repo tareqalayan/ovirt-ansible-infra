@@ -29,7 +29,7 @@
         msg: "Hosted engine VM name: {{ hosted_engine_vm_name }}"
 
     - name: Fetch disk info of HE VM
-      ovirt_disks_facts:
+      ovirt_disk_facts:
         auth: "{{ ovirt_auth }}"
         pattern: "datacenter={{ data_center_name }} and vm_names={{ hosted_engine_vm_name }}"
 
